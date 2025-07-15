@@ -8,8 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const employeeSelections = {};
 
     // =========================================================================
-    // هذه الروابط والمعرفات الخاصة بنموذج جوجل الخاص بك        
-    // تم تحديثها بناءً على تحليل الـ Payload الذي أرسلته
+    // الروابط والمعرفات وقيم الإرسال المحدثة بناءً على جميع التحليلات
     // =========================================================================
     const GOOGLE_FORM_URL_BASE = 'https://docs.google.com/forms/d/e/1FAIpQLSfskftL8UgG1bfz8ajrjQs8poxAf3g-JdIpkx1-fuzUno65dw/formResponse';
     
@@ -18,9 +17,9 @@ document.addEventListener('DOMContentLoaded', () => {
         departmentName: 'entry.1939048277', // اسم الجهة
         
         // الأنشطة ومربع "المشاركة بزيارة" - كلها ترسل قيمة 'مشارك'
-        'المشاركة بزيارة': 'entry.141139549', // هذا هو الـ ID للعمود الجديد "المشاركة بزيارة"
-        'النشاط 1': 'entry.1701544817', //
-        'النشاط 2': 'entry.1049433567', //
+        'المشاركة بزيارة': 'entry.141139549',
+        'النشاط 1': 'entry.1701544817',
+        'النشاط 2': 'entry.1049433567',
         'النشاط 3': 'entry.1415917879',
         'النشاط 4': 'entry.1226158303',
         'النشاط 5': 'entry.1245581123',
@@ -31,6 +30,16 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     
     const VALUE_TO_SUBMIT_FOR_CHECKBOXES = 'مشارك'; // القيمة الصحيحة التي يجب إرسالها لجميع مربعات الاختيار
+
+    // **الحقول المخفية الضرورية من Google Forms (قم بتحديث القيم إذا تغيرت في نموذجك)**
+    const HIDDEN_FORM_FIELDS = {
+        'dlut': '1752577619609', // مثال: تأكد من تحديث هذه القيمة إذا تغيرت في النموذج
+        'fbzx': '-7979597982292452690', // مثال: تأكد من تحديث هذه القيمة إذا تغيرت في النموذج
+        'fvv': '1', // هذه القيمة ثابتة غالباً
+        'partialResponse': '[null,null,"-7979597982292452690"]', // تأكد من تحديث هذه القيمة إذا تغيرت
+        'pageHistory': '0', // هذه القيمة ثابتة غالباً
+        // 'submissionTimestamp' لا يجب إضافته هنا، يتم إنشاؤه تلقائياً
+    };
     // =========================================================================
 
     activityTableBody.addEventListener('change', (event) => {
@@ -110,6 +119,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const formData = new FormData();
             
+            // إضافة حقول اسم الموظف والجهة
             if (GOOGLE_FORM_ENTRY_IDS.employeeName) {
                 formData.append(GOOGLE_FORM_ENTRY_IDS.employeeName, empName);
             }
@@ -117,18 +127,33 @@ document.addEventListener('DOMContentLoaded', () => {
                 formData.append(GOOGLE_FORM_ENTRY_IDS.departmentName, empData.department);
             }
 
+            // إضافة حقول الأنشطة المحددة (بما في ذلك المشاركة بزيارة)
             empData.activities.forEach(activityName => {
                 const entryId = GOOGLE_FORM_ENTRY_IDS[activityName];
                 if (entryId) {
                     formData.append(entryId, VALUE_TO_SUBMIT_FOR_CHECKBOXES); // دائماً ترسل 'مشارك'
+                    // إضافة حقل sentinel لكل نشاط محدد (للدلالة على أنه تم اختياره)
+                    formData.append(`${entryId}_sentinel`, ''); // قيمة فارغة
                 }
             });
+
+            // إضافة الحقول المخفية
+            for (const key in HIDDEN_FORM_FIELDS) {
+                if (HIDDEN_FORM_FIELDS.hasOwnProperty(key)) {
+                    formData.append(key, HIDDEN_FORM_FIELDS[key]);
+                }
+            }
+            
+            // إضافة submissionTimestamp الذي يتغير في كل مرة
+            // هذا يعتمد على توقيت الإرسال، وهو ضروري
+            formData.append('submissionTimestamp', Date.now()); 
+            // تأكد من أن Google Forms يستخدم توقيت Unix timestamp (بالمللي ثانية)
 
             try {
                 const response = await fetch(GOOGLE_FORM_URL_BASE, {
                     method: 'POST',
                     body: formData,
-                    mode: 'no-cors', // هذا الوضع يعني أننا لا نستطيع قراءة استجابة الخادم
+                    mode: 'no-cors',
                 });
             } catch (error) {
                 console.error(`Error sending data for ${empName}:`, error);
