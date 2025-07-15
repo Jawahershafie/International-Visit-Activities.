@@ -8,37 +8,37 @@ document.addEventListener('DOMContentLoaded', () => {
     const employeeSelections = {};
 
     // =========================================================================
-    // الروابط والمعرفات وقيم الإرسال المحدثة بناءً على جميع التحليلات
+    // الروابط والمعرفات وقيم الإرسال المحدثة بناءً على تحليل النموذج الجديد
     // =========================================================================
-    const GOOGLE_FORM_URL_BASE = 'https://docs.google.com/forms/d/e/1FAIpQLSfskftL8UgG1bfz8ajrjQs8poxAf3g-JdIpkx1-fuzUno65dw/formResponse';
+    const GOOGLE_FORM_URL_BASE = 'https://docs.google.com/forms/d/e/1FAIpQLScVvgra4RDsaLd6sv0o19HQHMqxZfepYjmcXZbWbzdd4wMzGw/formResponse';
     
     const GOOGLE_FORM_ENTRY_IDS = {
-        employeeName: 'entry.1739513905', // اسم الموظف
-        departmentName: 'entry.1939048277', // اسم الجهة
+        employeeName: 'entry.1211704904', // اسم الموظف - ID من النموذج الجديد
+        departmentName: 'entry.869066259', // اسم الجهة - ID من النموذج الجديد
         
-        // الأنشطة ومربع "المشاركة بزيارة" - كلها ترسل قيمة 'مشارك'
-        'المشاركة بزيارة': 'entry.141139549',
-        'النشاط 1': 'entry.1701544817',
-        'النشاط 2': 'entry.1049433567',
-        'النشاط 3': 'entry.1415917879',
-        'النشاط 4': 'entry.1226158303',
-        'النشاط 5': 'entry.1245581123',
-        'النشاط 6': 'entry.1679509619',
-        'النشاط 7': 'entry.871969035',
-        'النشاط 8': 'entry.814976203',
-        'النشاط 9': 'entry.1515678535',
+        // الأنشطة ومربع "المشاركة بزيارة" - كلها ترسل قيمة 'Option 1' الآن
+        'المشاركة بزيارة': 'entry.1169193560',
+        'النشاط 1': 'entry.7282178',
+        'النشاط 2': 'entry.1028961339',
+        'النشاط 3': 'entry.1855751472',
+        'النشاط 4': 'entry.761410515',
+        'النشاط 5': 'entry.2042745021',
+        'النشاط 6': 'entry.346795386',
+        'النشاط 7': 'entry.419807472',
+        'النشاط 8': 'entry.833895085',
+        'النشاط 9': 'entry.1430276306',
     };
     
-    const VALUE_TO_SUBMIT_FOR_CHECKBOXES = 'مشارك'; // القيمة الصحيحة التي يجب إرسالها لجميع مربعات الاختيار
+    // القيمة الصحيحة التي يجب إرسالها لجميع مربعات الاختيار في النموذج الجديد هي 'Option 1'
+    const VALUE_TO_SUBMIT_FOR_CHECKBOXES = 'Option 1'; 
 
-    // **الحقول المخفية الضرورية من Google Forms (قم بتحديث القيم إذا تغيرت في نموذجك)**
+    // **الحقول المخفية الضرورية من Google Forms (القيم المحدثة من النموذج الجديد)**
     const HIDDEN_FORM_FIELDS = {
-        'dlut': '1752577619609', // مثال: تأكد من تحديث هذه القيمة إذا تغيرت في النموذج
-        'fbzx': '-7979597982292452690', // مثال: تأكد من تحديث هذه القيمة إذا تغيرت في النموذج
-        'fvv': '1', // هذه القيمة ثابتة غالباً
-        'partialResponse': '[null,null,"-7979597982292452690"]', // تأكد من تحديث هذه القيمة إذا تغيرت
-        'pageHistory': '0', // هذه القيمة ثابتة غالباً
-        // 'submissionTimestamp' لا يجب إضافته هنا، يتم إنشاؤه تلقائياً
+        'fvv': '1',
+        'partialResponse': '[null,null,"-286504399359964835"]', // قيمة جديدة من النموذج الجديد
+        'pageHistory': '0',
+        'fbzx': '-286504399359964835', // قيمة جديدة من النموذج الجديد
+        // 'dlut' لم يظهر كحقل مخفي منفصل في اللقطات الجديدة، نأمل أن يتم التعامل معه تلقائيًا أو أنه غير مطلوب الآن
     };
     // =========================================================================
 
@@ -131,9 +131,11 @@ document.addEventListener('DOMContentLoaded', () => {
             empData.activities.forEach(activityName => {
                 const entryId = GOOGLE_FORM_ENTRY_IDS[activityName];
                 if (entryId) {
-                    formData.append(entryId, VALUE_TO_SUBMIT_FOR_CHECKBOXES); // دائماً ترسل 'مشارك'
+                    // نرسل 'Option 1' الآن لأن هذا ما يظهره النموذج الجديد
+                    formData.append(entryId, VALUE_TO_SUBMIT_FOR_CHECKBOXES); 
                     // إضافة حقل sentinel لكل نشاط محدد (للدلالة على أنه تم اختياره)
-                    formData.append(`${entryId}_sentinel`, ''); // قيمة فارغة
+                    // الـ sentinel IDs يتم توليدها تلقائياً بواسطة Google Forms 
+                    // إذا لم تكن موجودة كحقول مخفية، فلا نحتاج لإضافتها يدوياً.
                 }
             });
 
@@ -147,7 +149,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // إضافة submissionTimestamp الذي يتغير في كل مرة
             // هذا يعتمد على توقيت الإرسال، وهو ضروري
             formData.append('submissionTimestamp', Date.now()); 
-            // تأكد من أن Google Forms يستخدم توقيت Unix timestamp (بالمللي ثانية)
+            
 
             try {
                 const response = await fetch(GOOGLE_FORM_URL_BASE, {
