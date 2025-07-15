@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const employeeSelections = {};
 
     // =========================================================================
-    // الروابط والمعرفات وقيم الإرسال المحدثة بناءً على تحليل النموذج الجديد
+    // الروابط والمعرفات وقيم الإرسال المحدثة بناءً على تحليل النموذج الجديد و Payload
     // =========================================================================
     const GOOGLE_FORM_URL_BASE = 'https://docs.google.com/forms/d/e/1FAIpQLScVvgra4RDsaLd6sv0o19HQHMqxZfepYjmcXZbWbzdd4wMzGw/formResponse';
     
@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
         employeeName: 'entry.1211704904', // اسم الموظف - ID من النموذج الجديد
         departmentName: 'entry.869066259', // اسم الجهة - ID من النموذج الجديد
         
-        // الأنشطة ومربع "المشاركة بزيارة" - كلها ترسل قيمة 'Option 1' الآن
+        // الأنشطة ومربع "المشاركة بزيارة" - ID من النموذج الجديد
         'المشاركة بزيارة': 'entry.1169193560',
         'النشاط 1': 'entry.7282178',
         'النشاط 2': 'entry.1028961339',
@@ -35,10 +35,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // **الحقول المخفية الضرورية من Google Forms (القيم المحدثة من النموذج الجديد)**
     const HIDDEN_FORM_FIELDS = {
         'fvv': '1',
-        'partialResponse': '[null,null,"-286504399359964835"]', // قيمة جديدة من النموذج الجديد
+        // قيمة partialResponse يجب أن تتطابق مع fbzx إذا كانت ضمن نفس السلسلة كما في Payload الأصلي
+        'partialResponse': '[null,null,"-286504399359964835"]', // قيمة من النموذج الجديد
         'pageHistory': '0',
-        'fbzx': '-286504399359964835', // قيمة جديدة من النموذج الجديد
-        // 'dlut' لم يظهر كحقل مخفي منفصل في اللقطات الجديدة، نأمل أن يتم التعامل معه تلقائيًا أو أنه غير مطلوب الآن
+        'fbzx': '-286504399359964835', // قيمة من النموذج الجديد
+        // dlut كانت موجودة في Payload، ولكن ليس كحقل hidden في العناصر. قد يتم التعامل معها ديناميكياً.
     };
     // =========================================================================
 
@@ -133,9 +134,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (entryId) {
                     // نرسل 'Option 1' الآن لأن هذا ما يظهره النموذج الجديد
                     formData.append(entryId, VALUE_TO_SUBMIT_FOR_CHECKBOXES); 
-                    // إضافة حقل sentinel لكل نشاط محدد (للدلالة على أنه تم اختياره)
-                    // الـ sentinel IDs يتم توليدها تلقائياً بواسطة Google Forms 
-                    // إذا لم تكن موجودة كحقول مخفية، فلا نحتاج لإضافتها يدوياً.
+                    
+                    // **إضافة حقل _sentinel لكل نشاط تم تحديده**
+                    // هذا ضروري بناءً على Payload الذي أرسلته
+                    formData.append(`${entryId}_sentinel`, ''); 
                 }
             });
 
@@ -150,6 +152,8 @@ document.addEventListener('DOMContentLoaded', () => {
             // هذا يعتمد على توقيت الإرسال، وهو ضروري
             formData.append('submissionTimestamp', Date.now()); 
             
+            // إذا كان dlut لا يزال مطلوبًا، فقد نحتاج لإضافته هنا أيضًا
+            // formData.append('dlut', 'قيمة dlut من الـ Payload الأخير إذا كانت تتغير'); 
 
             try {
                 const response = await fetch(GOOGLE_FORM_URL_BASE, {
