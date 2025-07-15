@@ -2,13 +2,16 @@
 :root {
     --white: #ffffff;
     --black: #000000;
-    --green-light: #6D8B74; /* أخضر فاتح، لجعله أقل حدة */
+    --green-light: #6D8B74; /* أخضر فاتح */
     --green-dark: #6D8B74; /* أخضر أغمق قليلاً للعناوين والأزرار الرئيسية */
     --light-gray: #f7f7f7;
     --dark-text: #333333;
     --border-color: #e0e0e0;
 }
 
+/* ---------------------------------- */
+/* أنماط أساسية لجميع الشاشات (Desktop First) */
+/* ---------------------------------- */
 body {
     font-family: 'Arial', sans-serif;
     margin: 0;
@@ -16,27 +19,38 @@ body {
     background-color: var(--light-gray);
     color: var(--dark-text);
     direction: rtl; /* لدعم اللغة العربية من اليمين لليسار */
-    text-align: right; /* لمحاذاة النص للمنتصف */
+    text-align: right; /* لمحاذاة النص لليمين افتراضياً */
+    line-height: 1.6;
 }
 
 header {
-    background-color: var(--green-dark); /* استخدم الأخضر الداكن للرأس */
+    background-color: var(--green-dark);
     color: var(--white);
-    padding: 1rem 0;
+    padding: 1.5rem 0;
     text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: flex; /* لترتيب الشعار والعنوان */
+    align-items: center; /* توسيط عمودي */
+    justify-content: center; /* توسيط أفقي */
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    flex-wrap: wrap; /* للسماح للعناصر بالانتقال إلى سطر جديد على الشاشات الصغيرة */
+    gap: 20px; /* مسافة بين الشعار والعنوان */
 }
 
 header .logo img {
     height: 70px; /* حجم الشعار */
-    margin-inline-end: 20px; /* مسافة بين الشعار والعنوان */
+    flex-shrink: 0; /* منع الشعار من الانكماش */
+}
+
+header h1 {
+    margin: 0;
+    font-size: 2.5em; /* حجم خط كبير للعنوان الرئيسي */
+    flex-shrink: 1; /* السماح للعنوان بالانكماش إذا ضاقت المساحة */
+    text-align: center; /* التأكد من توسيط العنوان داخل الهيدر */
 }
 
 h1, h2, h3 {
-    color: var(--dark-text); /* العناوين باللون الأسود أو الرمادي الداكن */
+    color: var(--dark-text);
+    margin-top: 0;
 }
 
 main {
@@ -48,11 +62,17 @@ main {
     box-shadow: 0 0 15px rgba(0,0,0,0.08);
 }
 
+section {
+    margin-bottom: 30px;
+}
+
 .activity-selection-section h2, .submission-form-section h2 {
-    border-bottom: 2px solid var(--green-light); /* خط سفلي أخضر فاتح */
+    border-bottom: 2px solid var(--green-light);
     padding-bottom: 10px;
     margin-bottom: 25px;
-    color: var(--green-dark); /* عنوان القسم بالأخضر الداكن */
+    color: var(--green-dark);
+    font-size: 1.8em;
+    text-align: right; /* محاذاة لليمين */
 }
 
 .instructions {
@@ -61,7 +81,7 @@ main {
     font-size: 1.1em;
     color: var(--dark-text);
     padding: 10px 20px;
-    background-color: #e6ffe6; /* خلفية خفيفة للتوجيهات */
+    background-color: #e6ffe6;
     border-radius: 8px;
     border: 1px solid var(--green-light);
 }
@@ -70,6 +90,9 @@ main {
 .table-container {
     overflow-x: auto; /* لجعل الجدول قابلاً للتمرير أفقياً على الشاشات الصغيرة */
     margin-bottom: 30px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 }
 
 table {
@@ -77,7 +100,7 @@ table {
     border-collapse: collapse;
     margin: 0 auto;
     background-color: var(--white);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    min-width: 800px; /* حد أدنى لعرض الجدول على الديسكتوب لمنع التكدس */
 }
 
 table th, table td {
@@ -85,58 +108,57 @@ table th, table td {
     padding: 15px 10px;
     text-align: center;
     vertical-align: middle;
+    white-space: nowrap; /* يمنع التفاف النص في رؤوس الأعمدة */
 }
 
-/* رؤوس الجدول (الصف الأول والثاني) */
 table thead tr:first-child th {
-    background-color: var(--green-dark); /* اليوم الأول، الثاني، الثالث */
+    background-color: var(--green-dark);
     color: var(--white);
     font-weight: bold;
     font-size: 1.2em;
-    white-space: nowrap;
 }
 
 table thead tr:last-child th {
-    background-color: var(--green-light); /* نشاط 1، 2، 3 */
+    background-color: var(--green-light);
     color: var(--white);
     font-weight: bold;
     font-size: 1em;
-    white-space: nowrap;
 }
 
-/* اسم المشارك واسم الجهة في رأس الجدول */
 table th[rowspan="2"] {
     background-color: var(--green-dark);
     color: var(--white);
     font-size: 1.2em;
 }
 
-
 table tbody tr:nth-child(even) {
-    background-color: var(--light-gray); /* لون خلفية الصفوف الزوجية */
-}
-
-table tbody tr:hover {
-    background-color: #eef; /* تغيير اللون عند مرور المؤشر */
-}
-
-/* اسم المشارك واسم الجهة في جسم الجدول */
-table tbody td:first-child,
-table tbody td:nth-child(2) { /* اسم الجهة هو العمود الثاني الآن */
-    font-weight: bold;
-    color: var(--dark-text);
-    text-align: right; /* محاذاة لليمين */
-    padding-right: 20px;
     background-color: var(--light-gray);
 }
 
-/* تنسيق مربعات الاختيار */
-input[type="checkbox"] {
-    transform: scale(1.5); /* تكبير حجم مربع الاختيار */
-    margin: 0; /* إزالة أي هوامش افتراضية */
-    cursor: pointer;
+table tbody tr:hover {
+    background-color: #eef;
 }
 
+table tbody td:first-child,
+table tbody td:nth-child(2) {
+    font-weight: bold;
+    color: var(--dark-text);
+    text-align: right;
+    padding-right: 20px;
+    background-color: #f0f0f0;
+}
+/* تنسيق خاص لعمود المشاركة بزيارة على اللابتوب ليظهر في المنتصف */
+table tbody td[data-label="المشاركة بزيارة:"] {
+    text-align: center;
+    background-color: var(--white); /* لضمان عدم وجود خلفية رمادية */
+}
+
+
+input[type="checkbox"] {
+    transform: scale(1.5);
+    margin: 0;
+    cursor: pointer;
+}
 
 .hidden {
     display: none !important;
@@ -154,15 +176,15 @@ input[type="checkbox"] {
     font-size: 1.1em;
 }
 
-/* تصميم النموذج */
 .submission-form-section {
     margin-top: 40px;
     padding-top: 20px;
     border-top: 1px dashed var(--border-color);
+    text-align: center; /* لتوسيط الزر */
 }
 
 .submit-btn {
-    background-color: var(--black); /* زر الإرسال باللون الأسود */
+    background-color: var(--black);
     color: var(--white);
     border: none;
     padding: 15px 30px;
@@ -172,12 +194,12 @@ input[type="checkbox"] {
     font-weight: bold;
     transition: background-color 0.3s ease, transform 0.2s ease;
     width: auto;
-    display: block;
-    margin: 20px auto 0;
+    display: inline-block; /* لجعله يأخذ عرض المحتوى فقط */
+    margin-top: 20px;
 }
 
 .submit-btn:hover {
-    background-color: var(--green-dark); /* يتغير للأخضر عند التحويم */
+    background-color: var(--green-dark);
     transform: translateY(-2px);
 }
 
@@ -210,25 +232,167 @@ footer {
     font-size: 0.9em;
 }
 
-/* تصميم تجاوبي */
+/* ---------------------------------- */
+/* Media Queries للتصميم المتجاوب (Responsive Design) */
+/* ---------------------------------- */
+
+/* للهواتف الذكية (عرض أقصى 768px - يشمل معظم الهواتف والأجهزة اللوحية الصغيرة) */
 @media (max-width: 768px) {
-    header h1 {
-        font-size: 1.4em;
-        margin-inline-start: 10px;
-    }
-    table th, table td {
-        padding: 10px 5px;
-        font-size: 0.9em;
-    }
-    input[type="checkbox"] {
-        transform: scale(1.2);
-    }
-    .submit-btn {
-        width: 90%;
-        padding: 12px 25px;
-        font-size: 1em;
+    header {
+        flex-direction: column; /* ترتيب الشعار والعنوان عمودياً */
+        padding: 1rem 0;
+        gap: 10px; /* تقليل المسافة بين الشعار والعنوان */
     }
     header .logo img {
-        height: 50px;
+        height: 60px; /* تصغير حجم الشعار قليلاً */
+    }
+    header h1 {
+        font-size: 1.6em; /* تصغير حجم العنوان الرئيسي */
+        padding: 0 5px; /* تقليل البادينغ */
+    }
+    main {
+        padding: 10px;
+        margin: 15px auto;
+    }
+    .activity-selection-section h2, .submission-form-section h2 {
+        font-size: 1.4em;
+        margin-bottom: 15px;
+        text-align: center; /* توسيط العناوين الفرعية على الجوال */
+    }
+    .instructions {
+        font-size: 0.95em;
+        padding: 8px 15px;
+    }
+
+    /* تحويل الجدول إلى "بطاقات" (Mobile-Friendly Table) */
+    .table-container {
+        border: none;
+        box-shadow: none;
+    }
+    table {
+        min-width: unset; /* إزالة الحد الأدنى للعرض */
+        border-collapse: separate;
+        border-spacing: 0 15px; /* مسافة بين "البطاقات" */
+    }
+    thead {
+        display: none; /* إخفاء رؤوس الأعمدة الأصلية */
+    }
+    tbody, tr {
+        display: block; /* كل صف يصبح كرت (بطاقة) */
+        width: 100%;
+    }
+    tr {
+        border: 1px solid var(--border-color);
+        margin-bottom: 15px;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    td {
+        border: none;
+        border-bottom: 1px solid var(--border-color);
+        position: relative;
+        /* تم إزالة padding-right و flex-direction هنا */
+        text-align: right; /* محاذاة افتراضية لليمين */
+        white-space: normal;
+        display: flex; /* لجعل المحتوى داخله مرتباً */
+        flex-direction: column; /* **هنا التغيير لجعل التسمية والمحتوى تحت بعض** */
+        align-items: flex-start; /* محاذاة العناصر لبداية الـ flex container (اليمين في RTL) */
+        padding: 10px 15px; /* بادينغ لكل خلية */
+        min-height: 50px;
+        box-sizing: border-box;
+        font-size: 0.95em; /* تصغير حجم الخط لخلايا الجدول */
+    }
+    td:last-child {
+        border-bottom: 0;
+    }
+
+    /* اسم المشارك واسم الجهة في جسم الجدول على الجوال */
+    table tbody td:first-child,
+    table tbody td:nth-child(2) {
+        background-color: var(--white); /* إعادة الخلفية إلى الأبيض داخل البطاقات */
+        font-weight: bold;
+    }
+    /* تنسيق خاص لعمود المشاركة بزيارة على الجوال */
+    table tbody td[data-label="المشاركة بزيارة:"] {
+        text-align: right; /* محاذاة التسمية لليمين */
+        align-items: flex-start;
+        background-color: var(--white); /* لضمان عدم وجود خلفية رمادية */
+    }
+
+
+    /* هذه القاعدة هي التي تظهر التسمية (النشاط 1:، اسم المشارك:) */
+    td:before {
+        content: attr(data-label);
+        /* تم إزالة position: absolute; و width: 48%; و right: 0; هنا */
+        display: block; /* لجعلها تأخذ سطرًا كاملاً */
+        font-weight: bold;
+        color: var(--green-dark); /* لون التسمية */
+        margin-bottom: 5px; /* مسافة بين التسمية والقيمة تحتها */
+        text-align: right; /* محاذاة التسمية لليمين */
+        /* يمكن إضافة خلفية أو حد سفلي للتسمية إذا أردت فصلها بصرياً */
+        /* border-bottom: 1px solid var(--border-color); */
+        /* padding-bottom: 5px; */
+    }
+
+    /* لإخفاء النص الأصلي للخلية (اسم المشارك/الجهة) عند استخدام data-label */
+    /* هذا قد لا يكون ضرورياً إذا كان المحتوى هو فقط checkbox */
+    /* td > *:not(input[type="checkbox"]):not(div) { display: none; } */
+
+
+    input[type="checkbox"] {
+        transform: scale(1.6);
+        /* تم إزالة position: absolute; و left: 15px; و top: 50%; و translateY(-50%) هنا */
+        margin-top: 5px; /* مسافة بسيطة تحت التسمية */
+        /* يمكن تعديل هذا الهامش حسب الحاجة */
+    }
+    
+    /* إزالة البادينغ المخصص الذي كان لـ data-label */
+    td[data-label*="النشاط"],
+    td[data-label="المشاركة بزيارة:"] {
+        padding-right: 15px; /* بادينغ طبيعي من اليمين */
+        padding-left: 15px; /* بادينغ طبيعي من اليسار */
+    }
+
+
+    .submit-btn {
+        width: 90%; /* زر الإرسال يملأ العرض على الجوال */
+        padding: 12px 25px;
+        font-size: 1.1em;
+    }
+    #selection-summary {
+        font-size: 0.9em;
+        padding: 12px;
+    }
+    footer {
+        padding: 1rem 0;
+    }
+}
+
+/* لأجهزة اللوحية (عرض من 769px إلى 1024px) */
+@media (min-width: 769px) and (max-width: 1024px) {
+    main {
+        padding: 15px;
+        margin: 20px auto;
+    }
+    table {
+        min-width: 700px;
+    }
+    table th, table td {
+        padding: 12px 8px;
+        font-size: 0.95em;
+    }
+    input[type="checkbox"] {
+        transform: scale(1.4);
+    }
+    .submit-btn {
+        padding: 14px 28px;
+        font-size: 1.15em;
+    }
+    header h1 {
+        font-size: 2em;
+    }
+    header .logo img {
+        height: 65px;
     }
 }
